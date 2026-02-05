@@ -3,20 +3,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import Prism from "../components/Prism";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import SponsorMarquee from "../components/SponsorMarquee";
+
+const Prism = dynamic(() => import("../components/Prism"), { ssr: false });
 
 const MotionLink = motion.create(Link);
-
-const sponsors = [
-  { name: "KSUM", logo: "/logos/ksum.png" },
-  { name: "FabLab", logo: "/logos/fablab.png" },
-  { name: "ASAP", logo: "/logos/asap-logo.png" },
-  { name: "SolidWorks", logo: "/logos/SolidWorks-logo.png" },
-  { name: "KIREAP", logo: "/logos/KIREAP-logo-light.jpeg" },
-  { name: "Altair", logo: "/logos/Altair_logo.png" },
-  { name: "Adhira Appa Coffee", logo: "/logos/AdhiraAppaCoffee-logo.png" },
-];
 
 export default function Hero() {
   return (
@@ -54,7 +47,7 @@ export default function Hero() {
             <h1 className="text-4xl md:text-7xl font-black text-white tracking-tight leading-[0.9] font-clash">
               VIBHAVA <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">
-                KNOWLEDGE <br /> FEST
+                INNOVATION <br /> SUMMIT
               </span>
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-xl leading-relaxed font-sans">
@@ -74,35 +67,8 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Sponsor Marquee Overlay */}
-      <div className="absolute bottom-0 left-0 w-full z-20 bg-black/20 backdrop-blur-sm py-4 border-t border-white/5 overflow-hidden">
-        <div className="flex relative w-full">
-          <motion.div
-            className="flex whitespace-nowrap gap-16 items-center"
-            animate={{ x: "-50%" }}
-            transition={{
-              repeat: Infinity,
-              ease: "linear",
-              duration: 30
-            }}
-          >
-            {[...Array(2)].map((_, i) => (
-              <div key={i} className="flex gap-16 items-center">
-                {sponsors.map((sponsor, index) => (
-                  <div key={index} className="relative h-8 md:h-12 w-24 md:w-32 flex items-center justify-center grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300">
-                    <Image
-                      src={sponsor.logo}
-                      alt={sponsor.name}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                ))}
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </div>
+      {/* Using reused component */}
+      <SponsorMarquee />
     </section>
   );
 }

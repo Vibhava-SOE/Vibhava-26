@@ -1,23 +1,54 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { events, EventData } from '../data/events';
+import { client } from '@/sanity/lib/client';
 // Navbar removed
 import Footer from '../footer';
 
+interface EventData {
+  _id: string;
+  title: string;
+  venue: string;
+  time: string;
+  date: { day: string; month: string; year: string };
+  status: string;
+  club: string;
+  summary: string;
+  image?: any;
+}
+
 const VENUES = ['Seminar Hall', 'SDPK', 'Placement Auditorium'];
-const DATES = ['14', '15'];
+const DATES = ['12', '13'];
 
 export default function ItineraryPage() {
-  const [selectedDate, setSelectedDate] = useState('14');
+  const [selectedDate, setSelectedDate] = useState('12');
   const router = useRouter();
+
+  const [events, setEvents] = useState<EventData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const query = `*[_type == "event"] | order(date.day asc, time asc)`;
+        const data = await client.fetch(query, {}, { cache: 'no-store' });
+        setEvents(data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   // Filter events by date
   const eventsForDay = useMemo(() => {
-    return events.filter(event => event.date.day === selectedDate);
-  }, [selectedDate]);
+    return events.filter(event => String(event.date?.day) === selectedDate);
+  }, [selectedDate, events]);
 
   // Extract unique times for rows using string processing
   const timeSlots = useMemo(() => {
@@ -35,13 +66,13 @@ export default function ItineraryPage() {
     const csvContent = [
       headers.join(','),
       ...events.map(event => [
-        event.id,
+        event._id,
         `"${event.title.replace(/"/g, '""')}"`,
         `"${event.venue}"`,
         `"${event.time}"`,
-        event.date.day,
-        event.date.month,
-        event.date.year,
+        event.date?.day,
+        event.date?.month,
+        event.date?.year,
         `"${event.club}"`,
       ].join(','))
     ].join('\n');
@@ -55,6 +86,14 @@ export default function ItineraryPage() {
     link.click();
     document.body.removeChild(link);
   };
+
+  if (loading) {
+    return (
+      <div className="bg-black min-h-screen text-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-400"></div>
+      </div>
+    );
+  }
 
   return (
     <motion.main
@@ -169,10 +208,12 @@ export default function ItineraryPage() {
                           `}>
                             <div>
                               <div className="flex justify-between items-start mb-2">
-                                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm ${event.club === 'General' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-emerald-500/20 text-emerald-300'
-                                  }`}>
-                                  {event.club}
-                                </span>
+                                {event.club && event.club !== 'None' && (
+                                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm ${event.club === 'General' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-emerald-500/20 text-emerald-300'
+                                    }`}>
+                                    {event.club}
+                                  </span>
+                                )}
                                 {event.status === 'Rest' && (
                                   <span className="text-xs text-gray-500 font-mono uppercase">Break</span>
                                 )}

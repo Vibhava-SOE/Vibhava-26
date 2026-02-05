@@ -1,9 +1,12 @@
+import dynamic from "next/dynamic";
 import Hero from "./hero";
 import Navbar from "./navbar";
-import SpeakerCarousel from "./speaker";
-import About from "./about";
-import Schedule from "./schedule";
-import Footer from "./footer";
+
+// Lazy load below-the-fold components
+const About = dynamic(() => import("./about"), { ssr: true });
+const SpeakerCarousel = dynamic(() => import("./speaker"), { ssr: true });
+const Schedule = dynamic(() => import("./schedule"), { ssr: true });
+const Footer = dynamic(() => import("./footer"), { ssr: true });
 
 export default function Home() {
   return (

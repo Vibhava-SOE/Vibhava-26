@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 
 const MotionLink = motion.create(Link);
@@ -48,13 +49,13 @@ export default function Navbar() {
         {/* 1. Logo Section (Left) */}
         <div className="flex-shrink-0 flex items-center z-50 pointer-events-auto">
           <Link href="/" className="flex items-center gap-3 group">
-            <motion.div
-              whileHover={{ rotate: 180 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-emerald-400 to-teal-600 rounded-sm shadow-lg"
-            >
-              <span className="text-white font-bold text-lg font-clash">V</span>
-            </motion.div>
+            <Image
+              src="/logo-dark.svg"
+              alt="Vibhava Logo"
+              width={40}
+              height={40}
+              className="w-10 h-10"
+            />
             <div className="flex flex-col">
               <span className="text-xl font-bold tracking-wider text-white uppercase font-clash group-hover:text-emerald-400 transition-colors">
                 Vibhava
@@ -139,7 +140,7 @@ export default function Navbar() {
             >
               {[
                 { name: "ABOUT", href: "/#about" },
-                { name: "EVENTS", href: "/iternary" },
+                { name: "EVENTS", href: "/#schedule" },
                 { name: "CONTACT", href: "/#contact" }
               ].map((link) => (
                 <Link

@@ -5,62 +5,14 @@ import { motion, useMotionValue, animate, useInView } from 'framer-motion';
 import PixelCard from '@/components/PixelCard';
 
 const speakers = [
-  {
-    id: 1,
-    name: 'DAVID HARBOUR',
-    role: 'CEO, Company',
-    color: '#2DE1FC', // Electric Blue
-    image: '/speakers/speaker_1.png',
-  },
-  {
-    id: 2,
-    name: 'BRIE LARSON',
-    role: 'CEO, Company',
-    color: '#2AFC98', // Neon Green
-    image: '/speakers/speaker_2.png',
-  },
-  {
-    id: 3,
-    name: 'RACHEL WEISZ',
-    role: 'CEO, Company',
-    color: '#F9E900', // Bright Yellow
-    image: '/speakers/speaker_3.png',
-  },
-  {
-    id: 4,
-    name: 'BRIE LARSON',
-    role: 'CEO, Company',
-    color: '#EA00D9', // Hot Pink/Magenta
-    image: '/speakers/speaker_4.png',
-  },
-  {
-    id: 5,
-    name: 'DAVID HARBOUR',
-    role: 'CEO, Company',
-    color: '#8000FF', // Vibrant Purple
-    image: '/speakers/speaker_1.png',
-  },
-  {
-    id: 6,
-    name: 'BRIE LARSON',
-    role: 'CEO, Company',
-    color: '#2AFC98', // Neon Green
-    image: '/speakers/speaker_2.png',
-  },
-  {
-    id: 7,
-    name: 'RACHEL WEISZ',
-    role: 'CEO, Company',
-    color: '#F9E900', // Bright Yellow
-    image: '/speakers/speaker_3.png',
-  },
-  {
-    id: 8,
-    name: 'DAVID HARBOUR',
-    role: 'CEO, Company',
-    color: '#2DE1FC', // Electric Blue
-    image: '/speakers/speaker_4.png',
-  },
+  { id: 1, color: '#2DE1FC' }, // Electric Blue
+  { id: 2, color: '#2AFC98' }, // Neon Green
+  { id: 3, color: '#F9E900' }, // Bright Yellow
+  { id: 4, color: '#EA00D9' }, // Hot Pink/Magenta
+  { id: 5, color: '#8000FF' }, // Vibrant Purple
+  { id: 6, color: '#2AFC98' }, // Neon Green
+  { id: 7, color: '#F9E900' }, // Bright Yellow
+  { id: 8, color: '#2DE1FC' }, // Electric Blue
 ];
 
 export default function SpeakerCarousel() {
@@ -133,7 +85,7 @@ export default function SpeakerCarousel() {
         initial={{ opacity: 0, y: 30 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="container mx-auto px-12 mb-8"
+        className="container mx-auto px-6 md:px-12 mb-8"
       >
         <h2 className="text-4xl md:text-5xl font-bold text-center md:text-left text-white uppercase tracking-tighter font-clash">
           Speakers
@@ -145,7 +97,7 @@ export default function SpeakerCarousel() {
         initial={{ opacity: 0, y: 50 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-        className="container mx-auto px-4 md:px-10"
+        className="container mx-auto px-6 md:px-12"
       >
         <div ref={carouselRef} className="w-full cursor-grab active:cursor-grabbing overflow-hidden">
           <motion.div
@@ -153,38 +105,26 @@ export default function SpeakerCarousel() {
             dragConstraints={{ right: 0, left: -((totalPages - 1) * (carouselRef.current?.offsetWidth || 0)) }}
             style={{ x }}
             onDragEnd={handleDragEnd}
-            className="flex w-full"
+            className="flex select-none"
           >
             {speakers.map((speaker, index) => (
               <div
                 key={`${speaker.id}-${index}`}
-                className="flex-shrink-0 w-[80%] md:w-1/4 p-2"
+                className="flex-shrink-0 w-full md:w-1/4 p-2"
               >
                 <PixelCard
                   colors={speaker.color}
                   className="w-full h-[340px] md:h-[420px] rounded-sm group overflow-hidden border-none"
                 >
-                  <div
-                    className="absolute inset-0 w-full h-full bg-cover bg-center mix-blend-multiply opacity-80 transition-transform duration-500 group-hover:scale-105"
-                    style={{
-                      backgroundImage: `linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 100%), url(${speaker.image})`
-                    }}
-                  />
-
-                  {/* Content Overlay */}
-                  <div className="absolute bottom-0 left-0 w-full p-6 text-white z-10 pointer-events-none">
-                    <h3 className="text-3xl font-bold leading-none mb-1 uppercase tracking-tight font-clash">
-                      {speaker.name.split(' ').map((part, i) => (
-                        <span key={i} className="block">{part}</span>
-                      ))}
+                  {/* Content Overlay - Centered "Coming Soon" */}
+                  <div className="absolute inset-0 flex items-center justify-center p-6 z-10 pointer-events-none">
+                    <h3 className="text-4xl md:text-5xl font-black leading-none text-center uppercase tracking-tighter font-clash text-white mix-blend-overlay opacity-50">
+                      Coming<br />Soon
                     </h3>
-                    <p className="text-sm font-medium opacity-90 uppercase tracking-wide font-clash">
-                      {speaker.role}
-                    </p>
                   </div>
 
-                  {/* Simulated Duotone Image Filter Effect (Overlay) */}
-                  <div className="absolute inset-0 bg-black/10 mix-blend-overlay pointer-events-none" />
+                  {/* Subtle Noise/Texture Overlay */}
+                  <div className="absolute inset-0 bg-black/5 opacity-50" />
                 </PixelCard>
               </div>
             ))}

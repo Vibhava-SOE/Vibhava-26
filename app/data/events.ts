@@ -7,7 +7,6 @@ export interface EventData {
   status: string;
   club: string;
   summary: string; // Brief summary of the event
-  speaker?: string; // Speaker name if applicable
   image: string; // Placeholder or actual image path
 }
 

@@ -135,3 +135,9 @@ html, body, * {
   width: 0px;
   background: transparent;
 }
+
+/* @layer utilities {
+  .font-clash {
+    letter-spacing: 0.00em;
+  }
+} */

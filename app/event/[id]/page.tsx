@@ -1,19 +1,59 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { events } from '../../data/events';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { client } from '@/sanity/lib/client';
+import { urlFor } from '@/sanity/lib/image';
+
+interface EventData {
+  _id: string;
+  title: string;
+  venue: string;
+  time: string;
+  date: { day: string; month: string; year: string };
+  status: string;
+  club: string;
+  summary: string;
+  image: any;
+  link?: string;
+}
 
 export default function EventPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
 
-  // Find the event
-  const event = events.find((e) => e.id === Number(id));
+  const [event, setEvent] = useState<EventData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      if (!id) return;
+
+      try {
+        const query = `*[_type == "event" && _id == $id][0]`;
+        const data = await client.fetch(query, { id });
+        setEvent(data);
+      } catch (error) {
+        console.error("Error fetching event:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-400"></div>
+      </div>
+    );
+  }
 
   if (!event) {
     return (
@@ -58,12 +98,19 @@ export default function EventPage() {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative w-full h-[400px] md:h-[500px] rounded-lg overflow-hidden border border-white/10"
+            className="relative w-full max-w-md mx-auto aspect-[1080/1350] rounded-lg overflow-hidden border border-white/10"
           >
-            {/* Using a placeholder gradient for now as no real images are provided, but utilizing event.image if valid */}
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
-              <span className="text-gray-600 font-clash text-2xl uppercase tracking-widest">Event Image</span>
-            </div>
+            {event.image ? (
+              <img
+                src={urlFor(event.image).url()}
+                alt={event.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
+                <span className="text-gray-600 font-clash text-2xl uppercase tracking-widest">Event Image</span>
+              </div>
+            )}
           </motion.div>
 
           {/* Details Section */}
@@ -75,11 +122,13 @@ export default function EventPage() {
           >
             <div>
               <div className="flex items-center gap-4 mb-4">
-                <span className="px-3 py-1 bg-emerald-400/10 text-emerald-400 border border-emerald-400/20 rounded-full text-xs font-bold uppercase tracking-widest">
-                  {event.club}
-                </span>
+                {event.club && event.club !== 'None' && (
+                  <span className="px-3 py-1 bg-emerald-400/10 text-emerald-400 border border-emerald-400/20 rounded-xs text-xs font-bold uppercase tracking-widest">
+                    {event.club}
+                  </span>
+                )}
                 <span className="text-gray-400 text-sm font-medium uppercase tracking-wide">
-                  {event.date.month} {event.date.day}, {event.date.year}
+                  {event.date?.month} {event.date?.day}, {event.date?.year}
                 </span>
               </div>
               <h1 className="text-5xl md:text-6xl font-bold font-clash text-white mb-6 leading-tight">
@@ -118,9 +167,22 @@ export default function EventPage() {
             </div>
 
             <div className="mt-4">
-              <Link href="#" className="w-full md:w-auto px-10 py-4 bg-white text-black font-clash font-bold text-lg uppercase tracking-wide rounded-sm hover:bg-emerald-400 hover:text-white transition-all duration-300 hover:scale-[1.02] inline-block text-center">
-                Book Now
-              </Link>
+              {event.status === 'NotStarted' || event.status === 'Closed' ? (
+                <button
+                  disabled
+                  className="w-full md:w-auto px-10 py-4 bg-transparent border border-gray-700 text-gray-500 font-clash font-bold text-lg uppercase tracking-wide rounded-sm cursor-not-allowed inline-block text-center opacity-70"
+                >
+                  {event.status === 'NotStarted' ? 'Coming Soon' : 'Closed'}
+                </button>
+              ) : (
+                <Link
+                  href={event.link || '#'}
+                  target={event.link ? "_blank" : undefined}
+                  className="w-full md:w-auto px-10 py-4 bg-white text-black font-clash font-bold text-lg uppercase tracking-wide rounded-sm hover:bg-emerald-400 hover:text-white transition-all duration-300 hover:scale-[1.02] inline-block text-center"
+                >
+                  Book Now
+                </Link>
+              )}
             </div>
 
           </motion.div>
