@@ -121,11 +121,11 @@ export default function ItineraryPage() {
         </button>
       </div>
 
-      <div className="pt-32 pb-20 px-6 md:px-12 container mx-auto">
+      <div className="pt-32 pb-20 px-6 md:px-12 2xl:px-24 container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/20 pb-6 gap-6">
           <div>
-            <h1 className="text-4xl md:text-6xl font-bold font-clash uppercase tracking-tight mb-2">Itinerary</h1>
-            <p className="text-gray-400 max-w-xl">
+            <h1 className="text-4xl md:text-6xl 2xl:text-8xl font-bold font-clash uppercase tracking-tight mb-2">Itinerary</h1>
+            <p className="text-gray-400 max-w-xl 2xl:text-lg">
               Explore the complete event schedule across all venues.
             </p>
           </div>

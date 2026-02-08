@@ -25,7 +25,7 @@ export default function Hero() {
           scale={2.9}
           hueShift={0}
           colorFrequency={1}
-          noise={0.5}
+          noise={0.3}
           glow={0.8}
           offset={{ x: 100, y: -90 }} // Explicit defaults if needed, or omit
         />
@@ -34,7 +34,7 @@ export default function Hero() {
       </div>
 
       {/* Main Content: Title (Centered/Left-Shifted) */}
-      <div className="relative z-10 h-full flex flex-col justify-center px-8 md:px-20 w-full md:w-2/3 pointer-events-none">
+      <div className="relative z-10 h-full flex flex-col justify-center px-8 md:px-20 2xl:px-32 w-full md:w-2/3 pointer-events-none">
         {/* Pointer events none on wrapper to let background be interactive if needed, but text needs auto */}
         <motion.div
           className="pointer-events-auto flex flex-col items-start gap-8 translate-y-8"
@@ -44,13 +44,13 @@ export default function Hero() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <div>
-            <h1 className="text-4xl md:text-7xl font-black text-white tracking-tight leading-[0.9] font-clash">
+            <h1 className="text-4xl md:text-7xl 2xl:text-8xl font-black text-white tracking-tight leading-[0.9] font-clash">
               VIBHAVA <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">
                 INNOVATION <br /> SUMMIT
               </span>
             </h1>
-            <p className="mt-6 text-lg text-gray-300 max-w-xl leading-relaxed font-sans">
+            <p className="mt-6 text-lg 2xl:text-xl text-gray-300 max-w-xl leading-relaxed font-sans">
               Immerse yourself in a convergence of tradition, innovation, and intellect.
               Join us at CUSAT for an unforgettable journey.
             </p>
