@@ -40,7 +40,7 @@ export default function SponsorMarquee() {
               {sponsors.map((sponsor, index) => (
                 <div
                   key={index}
-                  className="relative h-6 md:h-8 w-20 md:w-28 flex items-center justify-center grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"
+                  className="relative h-6 md:h-8 2xl:h-12 w-20 md:w-28 2xl:w-40 flex items-center justify-center grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"
                 >
                   <Image
                     src={sponsor.logo}

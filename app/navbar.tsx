@@ -26,7 +26,8 @@ export default function Navbar() {
 
       const screenW = window.innerWidth;
       const elW = navRef.current.offsetWidth;
-      const paddingRight = 48;
+      // MATCH CSS Padding: px-12 (48px) on md, px-24 (96px) on 2xl (1536px+)
+      const paddingRight = screenW >= 1536 ? 96 : 48;
 
       const targetX = (screenW / 2) - (elW / 2) - paddingRight;
       setNavOffset(targetX);
@@ -39,7 +40,7 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      className={`fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-4 flex items-center justify-between transition-all duration-500 ${isScrolled ? "bg-black/60 backdrop-blur-md py-4" : "bg-transparent"
+      className={`fixed top-0 left-0 w-full z-50 px-6 md:px-12 2xl:px-24 py-4 flex items-center justify-between transition-all duration-500 ${isScrolled ? "bg-black/60 backdrop-blur-md py-4" : "bg-transparent"
         }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -96,7 +97,7 @@ export default function Navbar() {
               <MotionLink
                 key={link.name}
                 href={link.href}
-                className="relative text-sm font-bold tracking-widest text-white/80 hover:text-white uppercase font-clash transition-colors text-decoration-none"
+                className="relative text-sm 2xl:text-base font-bold tracking-widest text-white/80 hover:text-white uppercase font-clash transition-colors text-decoration-none"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >

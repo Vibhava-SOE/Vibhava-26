@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { client } from '@/sanity/lib/client';
 
@@ -74,25 +74,26 @@ export default function Schedule() {
     });
   }, [events, selectedVenue, selectedClub, selectedDate]);
 
+  const isInView = useInView(sectionRef, { amount: 0.1, once: false });
+
   return (
     <motion.section
       ref={sectionRef}
       className="w-full py-20 bg-black text-white overflow-hidden relative"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: false, amount: 0.1 }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <div className="container mx-auto px-6 md:px-12">
+      <div className="w-full max-w-[1920px] mx-auto px-6 md:px-12 2xl:px-12">
 
         {/* Header & Filters */}
         <div className="flex flex-col gap-8 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-center md:items-end border-b border-white/20 pb-6">
             <div className="mb-4 md:mb-0 text-center md:text-left">
-              <h3 className="text-gray-400 text-sm uppercase font-sans mb-2 tracking-widest">
+              <h3 className="text-gray-400 text-sm md:text-base 2xl:text-lg uppercase font-sans mb-2 tracking-widest">
                 Booking Calendar
               </h3>
-              <h2 className="text-4xl md:text-5xl font-bold uppercase text-white font-clash tracking-tight">
+              <h2 className="text-4xl md:text-5xl 2xl:text-7xl font-bold uppercase text-white font-clash tracking-tight">
                 Event Schedule
               </h2>
             </div>
@@ -216,7 +217,7 @@ export default function Schedule() {
                     >
                       {/* Date - Top Left on Mobile (Col 1), Left on Desktop (Order 1) */}
                       <div className="flex items-start gap-4 col-span-1 md:w-1/4 md:mb-0 md:order-1">
-                        <span className="text-4xl md:text-5xl font-bold text-white font-clash group-hover:text-emerald-400 transition-colors duration-300">{event.date?.day}</span>
+                        <span className="text-4xl md:text-5xl 2xl:text-6xl font-bold text-white font-clash group-hover:text-emerald-400 transition-colors duration-300">{event.date?.day}</span>
                         <div className="flex flex-col text-sm text-gray-400 font-medium pt uppercase tracking-wide">
                           <span>{event.date?.month}</span>
                           <span>{event.date?.year}</span>
@@ -239,7 +240,7 @@ export default function Schedule() {
 
                       {/* Event Details - Bottom Full Width on Mobile (Col Span 2), Middle on Desktop (Order 2) */}
                       <div className="col-span-2 flex flex-col md:w-1/2 md:mb-0 items-start text-left md:order-2">
-                        <h3 className="text-2xl font-bold text-white mb-2 md:mb-3 font-clash tracking-wide group-hover:text-emerald-400 transition-colors duration-300">
+                        <h3 className="text-2xl 2xl:text-3xl font-bold text-white mb-2 md:mb-3 font-clash tracking-wide group-hover:text-emerald-400 transition-colors duration-300">
                           {event.title}
                         </h3>
                         <div className="flex flex-wrap items-center justify-start gap-x-6 gap-y-2 text-sm text-gray-400">

@@ -30,27 +30,40 @@ export default function SpeakerCarousel() {
     }
   }, []);
 
-  const ITEMS_PER_PAGE_DESKTOP = 4;
   const ITEMS_PER_PAGE_MOBILE = 1;
+  const ITEMS_PER_PAGE_DESKTOP = 4;
+  const ITEMS_PER_PAGE_2XL = 5;
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [breakpoint, setBreakpoint] = useState<'mobile' | 'desktop' | '2xl'>('desktop');
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkBreakpoint = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setBreakpoint('mobile');
+      } else if (width >= 1536) {
+        setBreakpoint('2xl');
+      } else {
+        setBreakpoint('desktop');
+      }
+    };
+    checkBreakpoint();
+    window.addEventListener('resize', checkBreakpoint);
+    return () => window.removeEventListener('resize', checkBreakpoint);
   }, []);
 
-  const itemsPerPage = isMobile ? ITEMS_PER_PAGE_MOBILE : ITEMS_PER_PAGE_DESKTOP;
+  const itemsPerPage = breakpoint === 'mobile' ? ITEMS_PER_PAGE_MOBILE : (breakpoint === '2xl' ? ITEMS_PER_PAGE_2XL : ITEMS_PER_PAGE_DESKTOP);
   const totalPages = Math.ceil(speakers.length / itemsPerPage);
 
   const handleDragEnd = () => {
     const currentX = x.get();
-    const cardWidth = isMobile ? (carouselRef.current ? carouselRef.current.offsetWidth * 0.8 : 240) : (carouselRef.current ? carouselRef.current.offsetWidth / 4 : 300);
     const containerWidth = carouselRef.current ? carouselRef.current.offsetWidth : 0;
 
-    const scrollAmount = isMobile ? cardWidth : containerWidth;
+    let scrollAmount = containerWidth;
+
+    if (breakpoint === 'mobile' && carouselRef.current) {
+      scrollAmount = carouselRef.current.offsetWidth * 0.8;
+    }
 
     const newPage = Math.round(Math.abs(currentX) / scrollAmount);
     const clampedPage = Math.max(0, Math.min(newPage, totalPages - 1));
@@ -63,7 +76,7 @@ export default function SpeakerCarousel() {
     const containerWidth = carouselRef.current ? carouselRef.current.offsetWidth : 0;
 
     let targetX = 0;
-    if (isMobile) {
+    if (breakpoint === 'mobile') {
       const mobileCardWidth = containerWidth * 0.8;
       targetX = -pageIndex * mobileCardWidth;
     } else {
@@ -78,18 +91,22 @@ export default function SpeakerCarousel() {
   };
 
   return (
-    <section ref={sectionRef} className="w-full py-16 bg-black flex flex-col justify-center overflow-hidden">
+    <section ref={sectionRef} className="w-full max-w-[1820px] py-16 bg-black flex flex-col justify-center overflow-hidden">
 
       {/* Title Animation */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="container mx-auto px-6 md:px-12 mb-8"
+        className="w-full max-w-[1820px] mx-auto px-6 md:px-12 2xl:px-12 mb-8"
       >
-        <h2 className="text-4xl md:text-5xl font-bold text-center md:text-left text-white uppercase tracking-tighter font-clash">
-          Speakers
-        </h2>
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end border-b border-white/20 pb-6">
+          <div className="mb-4 md:mb-0 text-center md:text-left">
+            <h2 className="text-4xl md:text-5xl 2xl:text-7xl font-bold uppercase text-white font-clash tracking-tight">
+              Speakers
+            </h2>
+          </div>
+        </div>
       </motion.div>
 
       {/* Carousel Animation */}
@@ -97,7 +114,7 @@ export default function SpeakerCarousel() {
         initial={{ opacity: 0, y: 50 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-        className="container mx-auto px-6 md:px-12"
+        className="w-full max-w-[1920px] mx-auto px-6 md:px-12 2xl:px-12"
       >
         <div ref={carouselRef} className="w-full cursor-grab active:cursor-grabbing overflow-hidden">
           <motion.div
@@ -110,15 +127,15 @@ export default function SpeakerCarousel() {
             {speakers.map((speaker, index) => (
               <div
                 key={`${speaker.id}-${index}`}
-                className="flex-shrink-0 w-full md:w-1/4 p-2"
+                className={`flex-shrink-0 p-2 ${breakpoint === 'mobile' ? 'w-full' : (breakpoint === '2xl' ? 'w-1/5' : 'w-1/4')}`}
               >
                 <PixelCard
                   colors={speaker.color}
-                  className="w-full h-[340px] md:h-[420px] rounded-sm group overflow-hidden border-none"
+                  className="w-full h-[340px] md:h-[420px] 2xl:h-[500px] rounded-sm group overflow-hidden border-none"
                 >
                   {/* Content Overlay - Centered "Coming Soon" */}
                   <div className="absolute inset-0 flex items-center justify-center p-6 z-10 pointer-events-none">
-                    <h3 className="text-4xl md:text-5xl font-black leading-none text-center uppercase tracking-tighter font-clash text-white mix-blend-overlay opacity-50">
+                    <h3 className="text-4xl md:text-5xl 2xl:text-6xl font-black leading-none text-center uppercase tracking-tighter font-clash text-white mix-blend-overlay opacity-50">
                       Coming<br />Soon
                     </h3>
                   </div>
